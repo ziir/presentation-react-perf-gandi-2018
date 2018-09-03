@@ -929,6 +929,67 @@ function reducer(state, action) {
 
 ---
 
+# React avec Redux, en pratique
+## 2.3 `Actions`
+
+Le `dispatch` d'une `action` Redux est _lourd_ de conséquences.
+--
+- Exécutions des `middlewares` Redux.
+- Exécutions des `reducers` Redux.
+- Exécutions des `connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])`.
+- Re-rendus et cycle de vie éventuels des composants _connectés_ ainsi que leurs enfants.
+
+---
+# React avec Redux, en pratique
+## 2.3 `Actions`
+
+Attention aux `dispatch` d'`actions` _successifs_, en particulier dans les *actions de plus haut niveau*.
+
+.smaller[
+```javascript
+const setGlobalLoadingState = (loading) => (dispatch) => {
+  dispatch(setSearchBarLoadingState(loading));
+  dispatch(setContentLoadingState(loading));
+}
+
+const doSomethingImpactful = () => async (dispatch) => {
+  dispatch(setGlobalLoadingState(true));
+  let response;
+  try {
+    response = await fetchImportantData();
+    dispatch(processImportantData(response.data));
+  } finally {
+    dispatch(setGlobalLoadingState(false));
+    return response;
+  }
+}
+```
+]
+---
+# React avec Redux, en pratique
+## 2.3 `Actions`
+
+Solutions envisageables:
+- Créer une nouvelle _action_ qui agira sur de multiples _reducers_.
+- Utiliser une librairie qui vous permettra de _gommer_ l'impact de tels patterns (telle que `redux-act`).
+
+--
+
+.smaller[
+```javascript
+import { disbatch } from 'redux-act';
+
+const setGlobalLoadingState = (loading) => (dispatch) => {
+  disbatch(
+    dispatch,
+    [setSearchBarLoadingState(loading), setContentLoadingState(loading)]
+  );
+}
+```
+]
+
+---
+
 class: center, middle
 
 # Des outils pour nous aider
@@ -1009,66 +1070,6 @@ class: center, middle
 * mémoiser partout, mais avec discernement
 * mesurer avant et après les changements
 * lire la documentation des outils que vous utilisez
-
----
-# React avec Redux, en pratique
-## 2.3 `Actions`
-
-Le `dispatch` d'une `action` Redux est _lourd_ de conséquences.
---
-- Exécutions des `middlewares` Redux.
-- Exécutions des `reducers` Redux.
-- Exécutions des `connect([mapStateToProps], [mapDispatchToProps], [mergeProps], [options])`.
-- Re-rendus et cycle de vie éventuels des composants _connectés_ ainsi que leurs enfants.
-
----
-# React avec Redux, en pratique
-## 2.3 `Actions`
-
-Attention aux `dispatch` d'`actions` _successifs_, en particulier dans les *actions de plus haut niveau*.
-
-.smaller[
-```javascript
-const setGlobalLoadingState = (loading) => (dispatch) => {
-  dispatch(setSearchBarLoadingState(loading));
-  dispatch(setContentLoadingState(loading));
-}
-
-const doSomethingImpactful = () => async (dispatch) => {
-  dispatch(setGlobalLoadingState(true));
-  let response;
-  try {
-    response = await fetchImportantData();
-    dispatch(processImportantData(response.data));
-  } finally {
-    dispatch(setGlobalLoadingState(false));
-    return response;
-  }
-}
-```
-]
----
-# React avec Redux, en pratique
-## 2.3 `Actions`
-
-Solutions envisageables:
-- Créer une nouvelle _action_ qui agira sur de multiples _reducers_.
-- Utiliser une librairie qui vous permettra de _gommer_ l'impact de tels patterns (telle que `redux-act`).
-
---
-
-.smaller[
-```javascript
-import { disbatch } from 'redux-act';
-
-const setGlobalLoadingState = (loading) => (dispatch) => {
-  disbatch(
-    dispatch,
-    [setSearchBarLoadingState(loading), setContentLoadingState(loading)]
-  );
-}
-```
-]
 
 ---
 # Merci !
