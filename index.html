@@ -806,9 +806,15 @@ Dans les deux cas, l'usage de *ConnectedTabs* reste le meme:
   };
 ```
 ]
+
+--
+
+Autant que possible, retourner la meme valeur en evitant de la recalculer a chaque fois.
+C'est ce qu'on appelle la _memoization_.
+
 ---
 # React avec Redux, en pratique
-## 2. `createSelector`
+## 2. `createSelector` de `reselect`
 .smallest[
 ```javascript
   // {
@@ -1033,7 +1039,7 @@ const doSomethingImpactful = () => async (dispatch) => {
   let response;
   try {
     response = await fetchImportantData();
-    dispatch(setImportantData(response.data));
+    dispatch(processImportantData(response.data));
   } finally {
     dispatch(setGlobalLoadingState(false));
     return response;
