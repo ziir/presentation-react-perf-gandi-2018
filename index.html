@@ -694,89 +694,6 @@ Note: Pour en savoir plus sur les comportements autres que celui par défaut, vo
 
 ---
 # React avec Redux, en pratique
-## 1. react-redux `connect`
-
-.smallest[
-  ```javascript
-  import { connect } from 'react-redux';
-
-  const setActiveTabActionCreator = (tab) => ({ type: 'SET_ACTIVE_TAB', tab });
-
-  export function Tabs({ activeTabName, tabs, dispatch }) {
-    return (
-      <ul>
-        {tabs.map((tab) => (
-          <li key={`tab-${tab.name}`}>
-            <a onClick={() => { dispatch(setActiveTabActionCreator(tab.name)) }}
-                className={activeTabName === tab.name ? 'is-active' : ''}
-                href={`#${tab.name}`}
-            >
-              {tab.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    );
-  }
-
-  const selectActiveTab = state => state.activeTab;
-  const mapStateToProps = (state) => ({ activeTabName: selectActiveTab(state) });
-  export default const ConnectedTabs = connect(mapStateToProps)(Tabs);
-  ```
-]
----
-# React avec Redux, en pratique
-## 1. react-redux `connect`
-
-.smaller[Injecter des *action creators* en `props` avec `connect`]
-.smallest[
-```javascript
-  import { connect, bindActionCreators } from 'react-redux';
-*  import { setActiveTabActionCreator } from './actions';
-
-*  export function Tabs({ activeTabName, tabs, setActiveTab }) {
-    return (
-      <ul>
-        {tabs.map((tab) => (
-          <li key={`tab-${tab.name}`}>
-*            <a onClick={() => { setActiveTab(tab.name) }}
-                className={activeTabName === tab.name ? 'is-active' : ''}
-                href={\`#${tab.name}\`}
-             >
-              {tab.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    );
-  }
-  
-*  const mapDispatchToProps = ({ setActiveTab: setActiveTabActionCreator });
-*  export default const ConnectedTabs = connect(mapStateToProps, mapDispatchToProps)(Tabs);
-```
-]
----
-# React avec Redux, en pratique
-## 1. react-redux `connect`
-
-Dans les deux cas, l'usage de *ConnectedTabs* reste le meme:
-
-  ```javascript
-  ...
-  render() {
-    const tabs = [{
-      name: 'developers',
-      label: 'Developers! Developers! Developers!',
-    }];
-
-    return (
-      ...
-      <ConnectedTabs tabs={tabs} />
-    );
-  }
-  ```
----
-# React avec Redux, en pratique
 ## 2. Les selecteurs
 .smallest[
 ```javascript
@@ -1120,6 +1037,89 @@ La présentation est disponible en ligne à l'adresse
 4. La recuperation de l'etat a un *instant t* s'en retrouve grandement facilitee depuis tout composant de l'application
 5. L'expression de l'UI n'importe ou dans l'arbre de composants a partir de l'etat de l'application avec un outil tel que React est *naturel*
 ]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smallest[
+  ```javascript
+  import { connect } from 'react-redux';
+
+  const setActiveTabActionCreator = (tab) => ({ type: 'SET_ACTIVE_TAB', tab });
+
+  export function Tabs({ activeTabName, tabs, dispatch }) {
+    return (
+      <ul>
+        {tabs.map((tab) => (
+          <li key={`tab-${tab.name}`}>
+            <a onClick={() => { dispatch(setActiveTabActionCreator(tab.name)) }}
+                className={activeTabName === tab.name ? 'is-active' : ''}
+                href={`#${tab.name}`}
+            >
+              {tab.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  const selectActiveTab = state => state.activeTab;
+  const mapStateToProps = (state) => ({ activeTabName: selectActiveTab(state) });
+  export default const ConnectedTabs = connect(mapStateToProps)(Tabs);
+  ```
+]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+.smaller[Injecter des *action creators* en `props` avec `connect`]
+.smallest[
+```javascript
+  import { connect, bindActionCreators } from 'react-redux';
+*  import { setActiveTabActionCreator } from './actions';
+
+*  export function Tabs({ activeTabName, tabs, setActiveTab }) {
+    return (
+      <ul>
+        {tabs.map((tab) => (
+          <li key={`tab-${tab.name}`}>
+*            <a onClick={() => { setActiveTab(tab.name) }}
+                className={activeTabName === tab.name ? 'is-active' : ''}
+                href={\`#${tab.name}\`}
+             >
+              {tab.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+  
+*  const mapDispatchToProps = ({ setActiveTab: setActiveTabActionCreator });
+*  export default const ConnectedTabs = connect(mapStateToProps, mapDispatchToProps)(Tabs);
+```
+]
+---
+# React avec Redux, en pratique
+## 1. react-redux `connect`
+
+Dans les deux cas, l'usage de *ConnectedTabs* reste le meme:
+
+  ```javascript
+  ...
+  render() {
+    const tabs = [{
+      name: 'developers',
+      label: 'Developers! Developers! Developers!',
+    }];
+
+    return (
+      ...
+      <ConnectedTabs tabs={tabs} />
+    );
+  }
+  ```
 ---
 # Performance avec React et Redux
 ## quand Redux travaille **avec** vous
