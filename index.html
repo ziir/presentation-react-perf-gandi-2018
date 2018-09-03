@@ -701,7 +701,8 @@ Note: Pour en savoir plus sur les comportements autres que celui par défaut, vo
   //   tabs: [{
   //     name: 'developers',
   //     label: 'Developers, developers, developers'
-  //   }]
+  //   }],
+  //   activeTab: 'developers',
   // }
   const selectTabs = (state) => state.tabs;
 ```
@@ -710,15 +711,15 @@ Note: Pour en savoir plus sur les comportements autres que celui par défaut, vo
 --
 .smallest[
 ```javascript
-  const selectOneTab = (state, name) =>
-    selectTabs(state).find((tab) => tab.name === name);
+  const selectActiveTab = (state) =>
+    selectTabs(state).find((tab) => tab.name === state.activeTab);
 ```
 ]
 --
 .smallest[
 ```javascript
-  const selectOneTranslatedTab = (state, name) => {
-    const tab = selectOneTab(state, name);
+  const selectActiveTranslatedTab = (state) => {
+    const tab = selectActiveTab(state);
     return tab && { ...tab, translated_label: translate(tab.name) }
   };
 ```
@@ -738,7 +739,8 @@ C'est ce qu'on appelle la _memoization_.
   //   tabs: [{
   //     name: 'developers',
   //     label: 'Developers, developers, developers'
-  //   }]
+  //   }],
+  //   activeTab: 'developers',
   // }
   const selectTabs = (state) => state.tabs;
 ```
@@ -747,9 +749,9 @@ C'est ce qu'on appelle la _memoization_.
 --
 .smallest[
 ```javascript
-  const passName = (state, name) => name;
-  const selectOneTab = createSelector(
-    [selectTabs, passName],
+  const selectActiveTabName = (state) => state.activeTab;
+  const selectActiveTab = createSelector(
+    [selectTabs, selectActiveTabName],
     (tabs, name) => tabs.find((tab) => tab.name === name),
   );
 ```
@@ -757,8 +759,8 @@ C'est ce qu'on appelle la _memoization_.
 --
 .smallest[
 ```javascript
-  const selectOneTranslatedTab = createSelector(
-    [selectOneTab, passName],
+  const selectActiveTranslatedTab = createSelector(
+    [selectActiveTab],
     (tab) => tab && { ...tab, translated_label: translate(tab.name) },
   );
 ```
